@@ -1,0 +1,42 @@
+{
+  "name": "@krawlup/skills",
+  "version": "1.0.0",
+  "description": "Agent skills for krawlup - the agent-native growth & revenue-first analytics platform. Covers the krawlup MCP server (16 tools) and first-party analytics tag setup.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "krawlup-skills": "./bin/cli.js"
+  },
+  "files": [
+    "skills",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "krawlup",
+    "mcp",
+    "model-context-protocol",
+    "agent-skills",
+    "skills",
+    "claude",
+    "ai-agents",
+    "seo",
+    "analytics"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/krawlup/krawlup-skills.git"
+  },
+  "homepage": "https://krawlup.com/mcp",
+  "bugs": {
+    "url": "https://github.com/krawlup/krawlup-skills/issues",
+    "email": "nowshad@krawlup.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
