@@ -1,7 +1,7 @@
 {
   "name": "@krawlup/skills",
-  "version": "1.0.0",
-  "description": "Agent skills for krawlup - the agent-native growth & revenue-first analytics platform. Covers the krawlup MCP server (16 tools) and first-party analytics tag setup.",
+  "version": "1.0.1",
+  "description": "Agent skills for krawlup - the agent-native growth & revenue-first analytics platform. Covers the krawlup MCP server (19 tools) and first-party analytics tag setup.",
   "license": "MIT",
   "type": "module",
   "bin": {

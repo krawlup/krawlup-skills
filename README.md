@@ -9,7 +9,7 @@ Two skills, each a self-contained `SKILL.md` following the standard [agent skill
 
 | Skill | What your agent learns |
 |---|---|
-| [`krawlup-mcp`](skills/krawlup-mcp/SKILL.md) | Connect to the krawlup MCP server (OAuth 2.1 or agent keys) and use all 16 tools: audit products, read AI fix cards, trigger rescans, submit and publish listings, pull first-party analytics. |
+| [`krawlup-mcp`](skills/krawlup-mcp/SKILL.md) | Connect to the krawlup MCP server (OAuth 2.1 or agent keys) and use all 19 tools: run the free site report on any website, check what the founder's plan allows, audit products, read AI fix cards, trigger rescans, submit and publish listings, pull first-party analytics. |
 | [`krawlup-analytics-setup`](skills/krawlup-analytics-setup/SKILL.md) | Install krawlup's cookieless analytics tag on any site - copy-paste snippet or the [`@krawlup/analytics-tag`](https://www.npmjs.com/package/@krawlup/analytics-tag) npm library - and wire up custom conversion goals. |
 
 ## Install
@@ -32,6 +32,8 @@ Any MCP client works: point it at `https://krawlup.com/api/mcp` (streamable HTTP
 
 ## What your agent can do
 
+- **Check the plan** - read the founder's subscription status, abilities, limits and usage meters before doing anything else
+- **Audit any website** - run the free site report (2 scans per agent per month) and read the full report: performance, AEO, CRO, SEO crawl
 - **Audit** - pull performance, AEO, and CRO scores, failing checks, and scan history for each product
 - **Fix** - read the structured AI fix cards and apply them in your codebase
 - **Rescan** - trigger a fresh scan and poll until results land (spends the plan's scan budget)
