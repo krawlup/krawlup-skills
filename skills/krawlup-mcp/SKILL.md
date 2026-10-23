@@ -9,10 +9,10 @@ krawlup (https://krawlup.com) is an agent-native growth & revenue-first analytic
 
 ## Endpoint
 
-`POST https://krawlup.com/api/mcp` - streamable HTTP transport, **stateless** (no session id required), JSON responses enabled. Server name: `krawlup`.
+`POST https://api.krawlup.com/mcp` - streamable HTTP transport, **stateless** (no session id required), JSON responses enabled. Server name: `krawlup`.
 
 ```
-claude mcp add --transport http krawlup https://krawlup.com/api/mcp
+claude mcp add --transport http krawlup https://api.krawlup.com/mcp
 ```
 
 Cursor / Windsurf / Zed (`mcp.json`):
@@ -21,7 +21,7 @@ Cursor / Windsurf / Zed (`mcp.json`):
 {
   "mcpServers": {
     "krawlup": {
-      "url": "https://krawlup.com/api/mcp",
+      "url": "https://api.krawlup.com/mcp",
       "headers": { "Authorization": "Bearer sk_ag_YOUR_KEY" }
     }
   }
@@ -32,11 +32,11 @@ Cursor / Windsurf / Zed (`mcp.json`):
 
 Three credential levels. Everything personal needs one; the catalog reads and the free site report are public.
 
-**1. Anonymous** - may call `initialize`, `tools/list`, `ping`, the three public catalog tools, and the two free site-report tools. Calling any other tool returns `401` with a `WWW-Authenticate` challenge pointing at `/.well-known/oauth-protected-resource/api/mcp`.
+**1. Anonymous** - may call `initialize`, `tools/list`, `ping`, the three public catalog tools, and the two free site-report tools. Calling any other tool returns `401` with a `WWW-Authenticate` challenge pointing at `/.well-known/oauth-protected-resource/mcp`.
 
 **2. Agent key** (`sk_ag_…`) - minted in the krawlup dashboard → Agent access. Scoped (`read`, `submit`, `rescan`; default `read`), optionally restricted to a product allowlist, optional expiry. Send as `Authorization: Bearer sk_ag_…`. Keys are the only credential that can hold `rescan`.
 
-**3. OAuth connection** (`sk_mc_…`) - OAuth 2.1 for public clients: dynamic client registration, PKCE S256 only, opaque 1-hour access tokens, 90-day rotating refresh tokens (reuse outside the 30s grace window revokes the connection). Grants `read` + `submit` only - **`rescan` is never granted over OAuth**. Flow: call an authed tool → catch the `401` challenge → open the authorization endpoint in a browser → the founder approves at `https://krawlup.com/mcp/connect` → exchange the code at `/api/oauth/token`. Discovery documents: `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource/api/mcp`.
+**3. OAuth connection** (`sk_mc_…`) - OAuth 2.1 for public clients: dynamic client registration, PKCE S256 only, opaque 1-hour access tokens, 90-day rotating refresh tokens (reuse outside the 30s grace window revokes the connection). Grants `read` + `submit` only - **`rescan` is never granted over OAuth**. Flow: call an authed tool → catch the `401` challenge → open the authorization endpoint in a browser → the founder approves at `https://krawlup.com/mcp/connect` → exchange the code at `/oauth/token`. Discovery documents: `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource/mcp`.
 
 ## Scopes & rate limits
 

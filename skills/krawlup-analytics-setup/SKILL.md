@@ -13,7 +13,7 @@ Add BOTH lines inside `<head>` (or before `</body>`) on every page:
 
 ```html
 <script>window.krawlup=window.krawlup||function(){(window.krawlup.q=window.krawlup.q||[]).push(arguments)};</script>
-<script defer src="https://krawlup.com/t.js" data-site="TOKEN"></script>
+<script defer src="https://api.krawlup.com/t.js" data-site="TOKEN"></script>
 ```
 
 Replace `TOKEN` with the product's analytics token. The first line is a queue shim: it lets page scripts call `window.krawlup(...)` before the deferred tracker loads; the tracker then drains the queue. Data appears in the Dashboard → Website tab within a minute of the first visit.
@@ -37,7 +37,7 @@ trackEvent('purchase', { value: 49.0, currency: 'USD' });
 
 ## What is tracked automatically
 
-Once the tag is installed, the tracker (served from `https://krawlup.com/t.js`) handles everything with no extra code:
+Once the tag is installed, the tracker (served from `https://api.krawlup.com/t.js`) handles everything with no extra code:
 
 - Pageviews on initial load and on SPA route changes (`pushState` / `popstate`).
 - UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`).

@@ -25,10 +25,10 @@ Or copy a skill folder manually - no code, just markdown.
 ## Connect in 30 seconds
 
 ```bash
-claude mcp add --transport http krawlup https://krawlup.com/api/mcp
+claude mcp add --transport http krawlup https://api.krawlup.com/mcp
 ```
 
-Any MCP client works: point it at `https://krawlup.com/api/mcp` (streamable HTTP). Authenticate with an agent key from the dashboard (Dashboard → Agent access) or one browser approval via OAuth. The catalog reads are public; `krawlup-mcp` covers scopes, rate limits, and every tool.
+Any MCP client works: point it at `https://api.krawlup.com/mcp` (streamable HTTP). Authenticate with an agent key from the dashboard (Dashboard → Agent access) or one browser approval via OAuth. The catalog reads are public; `krawlup-mcp` covers scopes, rate limits, and every tool.
 
 ## What your agent can do
 
