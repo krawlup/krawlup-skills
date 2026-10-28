@@ -1,6 +1,6 @@
 ---
 name: krawlup-mcp
-description: Use the krawlup MCP server (19 tools) to audit any website with the free site report, check what the founder's plan allows, audit products, trigger rescans, manage catalog listings, and read first-party analytics. Use when a founder asks their agent to "check my krawlup scores", "fix what krawlup flagged", "rescan my product", "add/publish my product on krawlup", "run a site report on example.com", or "pull my krawlup analytics". Covers connection (OAuth 2.1 or agent keys), scopes, rate limits, and honest entitlement gating.
+description: Use the krawlup MCP server (26 tools) to audit any website with the free site report, check what the founder's plan allows, audit products, trigger rescans, manage catalog listings, and read first-party analytics. Use when a founder asks their agent to "check my krawlup scores", "fix what krawlup flagged", "rescan my product", "add/publish my product on krawlup", "run a site report on example.com", or "pull my krawlup analytics". Covers connection (OAuth 2.1 or agent keys), scopes, rate limits, and honest entitlement gating.
 ---
 
 # krawlup MCP server
@@ -68,17 +68,28 @@ The public /site-report tool, for ANY website - no sign-up. The limit matches th
 - **`get_my_subscription`** - no params → the founder's plan (name, price), status (`active` / trial / in the 3-day renewal grace / expired read-only), `abilities[]`, `limits` (a limit of 0 means unlimited), `usage` meters for the current period, and a `can` summary (`addWebsite`, `publishToDirectory`, `runScans`, `keywordResearch`, `websiteAnalytics`). **Call this first** to check what the plan allows before using any other tool.
 - **`list_products`** - no params → array of `{ key, title, score, performance, aeoScore, failingAudits, updatedAt }`. Ownership-scoped, includes unlaunched products. Use this to discover the right `productKey`.
 - **`get_my_products_status`** - no params → up to 50 `{ productKey, slug, title, public, addedAt }`, newest first.
+- **`list_products`** - no params → your products with their latest scan scores.
+- **`compare_products`** - `{ range?: 'lifetime' | 'today' | '7d' | '30d' | '90d', sortBy?, order?, limit? }` → all your products side by side (visitors, views, revenue, conversions, scores); gated columns come back `null` with a note instead of failing.
 - **`get_insights`** - `{ productKey }` → the latest full audit: performance, `aeoScore`, safeBrowsing, metrics, `issues[]`, `unresolvedCards[]`, `bottleneck`, `scorecards`, `seoCrawl`, `funnel`, `findings[]`, `scanPending`. `psi.desktop` is stripped unless the plan includes desktop PSI; `unresolvedCards` come back `null` with a note unless the plan carries the `ai_fix_cards` facility.
 - **`get_fix_cards`** - `{ productKey }` → all stored AI fix cards (structured remediation instructions). Requires the `ai_fix_cards` plan facility; 403 otherwise. This is the main payload an agent needs to actually fix the site.
 - **`get_bottleneck`** - `{ productKey }` → the stored AI bottleneck card, or `null`.
 - **`get_scan_history`** - `{ productKey }` → last 100 scans, chronological, with per-run snapshot scores and sources.
-- **`get_analytics_snippet`** - `{ productKey }` → `{ snippet, instructions, verify, tip }`. Requires an **active paid subscription or the 3-day renewal grace window** with the `website_analytics` facility (no trial, no free tier).
-- **`get_website_analytics`** - `{ productKey, range?: 'today' | '7d' | '30d' (default 7d) }` → `{ totals, daily, topPages, topReferrers, countries, devices, realtime: { visitorsNow }, events, aiInsight? }`. Same subscription gating with the `website_analytics` facility; **revenue metrics are stripped** without the `analytics_conversion` facility, and the stored AI insight without `analytics_ai_insights`.
+- **`get_analytics_snippet`** - `{ productKey }` → `{ snippet, excludedPaths, instructions, verify, tip }` — `excludedPaths` is the product's current Excluded-pages board (read it before troubleshooting missing pages). Requires an **active paid subscription or the 3-day renewal grace window** with the `website_analytics` facility (no trial, no free tier).
+- **`get_analytics_token`** - `{ productKey }` → the bare data-site token for hand-written tags, the @krawlup/analytics-tag npm package, or custom integrations — never ask the founder to paste it. Same gating as get_analytics_snippet.
+- **`get_website_analytics`** - `{ productKey, range?: 'today' | '7d' | '30d' (default 7d) }` → `{ totals, daily, topPages, topReferrers, countries, devices, crawls: { aiAnswers, indexing, training, partial? }, realtime: { visitorsNow }, events, aiInsight? }`. `crawls` is the AI-bots data (`partial: true` means a crawler query failed — retry, the lists may be missing rows). Same subscription gating with the `website_analytics` facility; **revenue metrics are stripped** without the `analytics_conversion` facility, and the stored AI insight without `analytics_ai_insights`.
 - **`get_keyword_ideas`** - `{ productKey }` → latest keyword-research run `{ seed, provider, generatedAt, clusters, actions }`, or a fallback text explaining that research must be run from the dashboard first. Requires the `keyword_research` plan facility. Read-only by design.
+
+### Keywords (scope `read` for ranks; `rescan` for research & tracking — agent keys only)
+
+- **`run_keyword_research`** - `{ productKey, seed? }` → a Google-autocomplete sweep clustered into intent groups with volume/difficulty estimates and prioritized content actions. Spends one of the founder's monthly keyword-research runs — check get_my_subscription first. Requires the `keyword_research` plan facility.
+- **`add_tracked_keywords`** - `{ productKey, keywords[] (≤100, normalized and deduped) }` → `{ added, alreadyTracked, skippedCap, cap }`. Tracked keywords are re-checked by the scanner on its scan passes; max 25 tracked per product. Requires the `keyword_research` plan facility.
+- **`remove_tracked_keywords`** - `{ productKey, keywords[] }` → removes them from the board; their stored rank-check history is deleted with them.
+- **`get_keyword_ranks`** - `{ productKey, keyword? }` → per tracked keyword: latest position (null = checked and outside the top-10), best position, and the series of stored checks. Only positions actually checked are returned — never interpolated.
 
 ### Product management (scope `submit`)
 
-- **`submit_product`** - `{ url: string (required), name?, tagline?, description?, categories? (≤3), twitterUsername? }` → `{ ok, added, productKey, slug, dashboardUrl, nextSteps }`. 5/hour. The product lands **private**; omitted fields are filled from a scrape of the URL.
+- **`set_excluded_pages`** - `{ productKey, paths: string[] (FULL replacement list, ≤25), confirm: true }` → `{ productKey, paths }`. Replaces the Excluded-pages board — visits to those paths (and everything under them) are discarded at intake. **DESTRUCTIVE — needs the site owner's approval**: compliant clients prompt before the call, and the tool refuses outright unless `confirm=true` was set after the owner explicitly approved the exact list in chat. Never set `confirm=true` on a guess. An empty array clears the board. Scope `submit`. Active subscription (or the 3-day renewal grace window) required.
+- **`add_product`** - `{ url (required), name?, tagline?, description?, categories? (≤3), twitterUsername? }` → the added product. 5/hour. The product lands **private** — krawlup scrapes the site for anything omitted; explicit values override the scrape. Run check_launch_readiness first.
 - **`set_product_public`** - `{ productKey }` → publishes the listing. 10/hour. **Paid-gated**: requires an active paid subscription (cardless trials cannot publish).
 - **`set_product_private`** - `{ productKey }` → unpublishes. 10/hour. Always allowed on any plan.
 
@@ -88,7 +99,7 @@ The public /site-report tool, for ANY website - no sign-up. The limit matches th
 
 ## REST twins
 
-The same credentials work on the Bearer REST API under `/api/agent/v1/`: `GET /subscription`, `GET /products`, `GET /products/{key}`, `GET /products/{key}/keywords`, `POST /products/{key}/rescan`, `POST /submissions`, `POST /publish` (same scopes and rate limits).
+The same credentials work on the Bearer REST API under `https://api.krawlup.com/agent/v1/`: `GET /subscription`, `GET /products`, `GET /products/{key}`, `GET /products/{key}/keywords`, `POST /products/{key}/rescan`, `POST /submissions`, `POST /publish` (same scopes and rate limits).
 
 ## Agent etiquette
 

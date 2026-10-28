@@ -9,7 +9,7 @@ Two skills, each a self-contained `SKILL.md` following the standard [agent skill
 
 | Skill | What your agent learns |
 |---|---|
-| [`krawlup-mcp`](skills/krawlup-mcp/SKILL.md) | Connect to the krawlup MCP server (OAuth 2.1 or agent keys) and use all 19 tools: run the free site report on any website, check what the founder's plan allows, audit products, read AI fix cards, trigger rescans, submit and publish listings, pull first-party analytics. |
+| [`krawlup-mcp`](skills/krawlup-mcp/SKILL.md) | Connect to the krawlup MCP server (OAuth 2.1 or agent keys) and use all 26 tools: run the free site report on any website, check what the founder's plan allows, audit products, read AI fix cards, trigger rescans, submit and publish listings, pull first-party analytics. |
 | [`krawlup-analytics-setup`](skills/krawlup-analytics-setup/SKILL.md) | Install krawlup's cookieless analytics tag on any site - copy-paste snippet or the [`@krawlup/analytics-tag`](https://www.npmjs.com/package/@krawlup/analytics-tag) npm library - and wire up custom conversion goals. |
 
 ## Install
